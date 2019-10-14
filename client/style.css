@@ -1,0 +1,309 @@
+@import url(https://fonts.googleapis.com/css?family=Titillium+Web:900);
+
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #F8F8FF;
+}
+
+#top {
+  text-align: center;
+  margin: 0 auto;
+}
+
+#top h1 {
+  font-size: 3em;
+  font-family: 'Titillium Web', sans-serif;
+}
+
+h2{
+  font-size: 2em;
+  font-family: 'Titillium Web', sans-serif;
+}
+
+#content {
+  margin-top: 100px;
+  font-size: 2em;
+  text-align: center;
+}
+
+#container {
+  width: 100%;
+  height: 350px;
+  position: relative;
+  border: 1px solid white;
+  border-radius: 5px;
+}
+
+#card {
+  width: 300px;
+  height: 1000px;
+  background-color: #708090;
+  position: absolute;
+  left: 50%;
+  margin-left: -150px;
+  top: 50%;
+  margin-top: -175px;
+}
+
+#banner{
+  font-family: 'Arial', sans-serif;
+  font-weight: bold;
+}
+
+#imgContainer{
+  border: 2px #F8F8FF groove;
+  border-radius: 7px;
+  margin: 0.5em;
+  padding: 0.5em;
+  position: relative;
+}
+
+#sparkleContainer{
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 50%;
+  margin-left: 50%;
+  top: 50%;
+  margin-top: 50%;
+}
+
+#descContainer{
+  background-color: #F8F8FF;
+  border: 2px #2F4F4F groove;
+  border-radius: 7px;
+  margin: 0.5em;
+}
+
+#formContainer {
+  background-color: #708090;
+  padding: 1em;
+}
+
+h3{
+  font-family: 'Segoe UI', sans-serif;
+  color: #2F4F4F;
+  font-size: 0.8em;
+}
+
+p{
+  font-family: 'Segoe UI', sans-serif;
+  color: #2F4F4F;
+  font-size: 0.5em;
+}
+
+input[type=text] {
+  border: 2px solid #F8F8FF;
+  border-radius: 4px;
+}
+
+input[type=submit] {
+  border: 2px solid #F8F8FF;
+  border-radius: 8px;
+}
+
+/* Buttons    styles from: https://www.bestcssbuttongenerator.com */
+.unlockBtn {
+	box-shadow:inset 0px 1px 0px 0px #fce2c1;
+	background:linear-gradient(to bottom, #ffc477 5%, #fb9e25 100%);
+	background-color:#ffc477;
+	border-radius:6px;
+	border:1px solid #eeb44f;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:15px;
+	font-weight:bold;
+	padding:6px 24px;
+	text-decoration:none;
+  text-shadow:0px 1px 0px #cc9f52;
+  margin-top: 1.5em;
+}
+.unlockBtn:hover {
+	background:linear-gradient(to bottom, #fb9e25 5%, #ffc477 100%);
+	background-color:#fb9e25;
+}
+.unlockBtn:active {
+	position:relative;
+	top:1px;
+}
+
+.submitBtn {
+	box-shadow:inset 0px 1px 0px 0px #bbdaf7;
+	background:linear-gradient(to bottom, #79bbff 5%, #378de5 100%);
+	background-color:#79bbff;
+	border-radius:6px;
+	border:1px solid #84bbf3;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:15px;
+	font-weight:bold;
+	padding:6px 24px;
+	text-decoration:none;
+  text-shadow:0px 1px 0px #528ecc;
+  margin-top: 1em;
+}
+.submitBtn:hover {
+	background:linear-gradient(to bottom, #378de5 5%, #79bbff 100%);
+	background-color:#378de5;
+}
+.submitBtn:active {
+	position:relative;
+	top:1px;
+}
+
+/* Animations */
+.popIn {
+  opacity: 0;
+  animation:  popIn 1.5s ease-in-out forwards;
+}
+.dropDown {
+  opacity: 0;
+  animation:  dropDown 1.5s ease-in-out 2.5s forwards;
+}
+.shiftLeft1 {
+  opacity: 0;
+  animation:  shiftLeft 1.5s ease-in-out 3.5s forwards;
+}
+.shiftLeft2 {
+  opacity: 0;
+  animation:  shiftLeft 1.5s ease-in-out 3.75s forwards;
+}
+.shiftLeft3 {
+  opacity: 0;
+  animation:  shiftLeft 1.5s ease-in-out 4s forwards;
+}
+.preview {
+  animation:  preview 2.5s forwards;
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0.1);
+    opacity: 0;
+  }
+  75% {
+    transform: scale(1.5);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+@keyframes dropDown {
+  0% {
+    transform: translateY(-15px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0px);
+    opacity: 1;
+  }
+}
+
+@keyframes shiftLeft {
+  0% {
+    transform: translateX(15px);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: translateX(0px);
+    opacity: 1;
+  }
+}
+
+@keyframes preview {
+  0% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Sparkle Animation from resource: https://jsfiddle.net/bc_rikko/qwbfkv6y/2/ */
+img.glitter-star {
+  position: absolute;
+  height: 8px;
+  width: 8px;
+
+  animation: glitter 2s linear 0s infinite normal;
+  -webkit-animation: glitter 2s linear 0s infinite normal;
+  -moz-animation: glitter 2s linear 0s infinite normal;
+  -ms-animation: glitter 2s linear 0s infinite normal;
+  -o-animation: glitter 2s linear 0s infinite normal;
+}
+
+@keyframes glitter {
+  0% {
+    -webkit-transform: scale(1.0);
+    opacity: 1;
+  }
+  25% {
+    -webkit-transform: scale(0.5);
+    opacity: 0;
+  }
+  50% {
+    -webkit-transform: scale(1.0);
+    opacity: 1;
+  }
+  75% {
+    -webkit-transform: scale(0.5);
+    opacity: 0;
+  }
+  100% {
+    -webkit-transform: scale(1.0);
+    opacity: 1;
+  }
+}
+
+/* Special font animation via resource: https://codepen.io/liuzenan/pen/nCJpo */
+
+.shimmer {
+  display: inline-block;
+  color:white;
+  font-family: 'Titillium Web', sans-serif;
+  opacity: 0.3;
+  
+  background: #acacac -webkit-gradient(linear, 100% 0, 0 0, from(#acacac), color-stop(0.5, #ffffff), to(#acacac));
+  
+  background-position: -4rem top; /*50px*/
+  background-repeat: no-repeat;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -webkit-animation-name: shimmer;
+  -webkit-animation-duration: 2.2s;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-background-size: 4rem 100%; /*50px*/
+  -webkit-animation-fill-mode: forwards;
+  
+}
+
+@-webkit-keyframes shimmer {
+    0% {
+        background-position: -4rem top; /*50px*/
+        
+    }
+    70% {
+        background-position: 12.5rem top; /*200px*/
+    }
+
+    100% {
+        background-position: 12.5rem top; /*200px*/
+        opacity: 1;
+    }
+}

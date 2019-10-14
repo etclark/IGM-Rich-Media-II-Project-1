@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Our simple HTTP server</title>
+  <link rel="stylesheet" type="text/css" href="/style.css">
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <script type="text/babel">
+    const parseJSON = (xhr, content) => {
+      const obj = JSON.parse(xhr.response);
+      console.dir(obj);
+
+      if(obj.message){
+        content.innerHTML += `<p>${obj.message}</p>`;
+      }
+    };
+
+    const handleResponse = (xhr, method) => {
+      const type = xhr.getResponseHeader('content-type');
+      const content = document.querySelector('#content');
+      content.innerHTML = '';
+      const h2 = document.createElement('h2');
+      const p = document.createElement('p');
+
+      //Check 204 Status
+      if(xhr.status === 204){
+        h2.textContent = 'Updated (No Content)';
+        content.appendChild(h2);
+        return;
+      }
+
+      if(type === 'application/json'){
+        if(method === 'HEAD'){
+          handleHead(xhr.status);
+          return;
+        }
+        const obj = JSON.parse(xhr.response);
+        if(obj.waifus){
+          if (method === 'GET') {
+            let rarity = decideRarity();
+            let waifuHTML = getRandomWaifu(obj.waifus, rarity);
+            content.innerHTML = waifuHTML;
+            $('.preview').bind('animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd', function(e) { $(this).remove(); });
+            //Make legendary sparkles
+            if(rarity === "Legendary"){
+              makeSparkles();
+            }
+          }
+        }
+        else{
+          h2.textContent = `${obj.id}`;
+          p.textContent = `Message: ${obj.message}`;
+        }
+        content.appendChild(h2);
+        content.appendChild(p);
+      }
+      else{
+        content.innerHTML = xhr.response;
+      }
+    };
+
+    const handleHead = (status) => {
+      const content = document.querySelector('#content');
+      switch (status) {
+        case 200:
+          content.innerHTML = '<h1>Success</h1>';
+          break;
+        case 201:
+          content.innerHTML = '<h1>Created</h1>';
+          break;
+        case 204:
+          content.innerHTML = '<h1>Updated (No Content)</h1>';
+          break;
+        case 400:
+          content.innerHTML = '<h1>Bad Request</h1>';
+          break;
+        default:
+          content.innerHTML = '<h1>Resource Not Found</h1>';
+          break;
+      }
+    }
+
+    const sendGet = (e, getForm, acceptedType) => {
+
+      const xhr = new XMLHttpRequest();
+
+      xhr.open('GET', getForm.action);//Needs a method and a URL
+      xhr.setRequestHeader('Accept', acceptedType);
+      xhr.onload = () => handleResponse(xhr, 'GET');
+      xhr.send();
+      e.preventDefault();
+      return false;
+    };
+
+    const sendPost = (e, infoForm) =>{
+      const infoAction = infoForm.getAttribute('action');
+      const infoMethod = infoForm.getAttribute('method');
+      const nameField = infoForm.querySelector('#nameField');
+      const seriesField = infoForm.querySelector('#seriesField');
+      const descriptionField = infoForm.querySelector('#descriptionField');
+      const rarityField = infoForm.querySelector('#rarityField');
+      const urlField = infoForm.querySelector('#urlField');
+
+      const xhr = new XMLHttpRequest();
+      xhr.open(infoMethod, infoAction);
+
+      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+      xhr.setRequestHeader('Accept', 'application/json');
+
+      xhr.onload = () => handleResponse(xhr, infoMethod);
+
+      const formData = `name=${nameField.value}&series=${seriesField.value}&description=${descriptionField.value}&url=${urlField.value}&rarity=${rarityField.value}`;
+
+      xhr.send(formData);
+      e.preventDefault();
+      return false;
+    }
+
+    const init = () => {
+      const infoForm = document.querySelector('#infoForm');
+      const getForm = document.querySelector('#getForm');
+
+      const getWaifu = (e) => sendGet(e, getForm, 'application/json');
+      const addWaifu = (e) => sendPost(e, infoForm); 
+      getForm.addEventListener('submit', getWaifu);
+      infoForm.addEventListener('submit', addWaifu);
+    };
+
+    //HELPER FUNCTIONS
+
+    const getRandomWaifu = (waifus, rarity) => {
+      let waifuChoice = [];
+
+      Object.keys(waifus).forEach(function(waifu){
+        //console.log(waifu);//References key of object
+        //console.log(waifus[waifu]);//Use this to reference specific waifu object
+        if (waifus[waifu].rarity === rarity) {
+          waifuChoice.push(waifus[waifu]);
+        }
+      });
+      
+      //Now we have an array of all of the characters we can choose from
+      //So choose one of those
+      //Generate random number between 1 and the array length
+      let rand = Math.floor(Math.random() * waifuChoice.length);
+
+      let finalWaifu = waifuChoice[rand];
+      let rarityColor;
+      //Decide color based on rarity
+      switch (rarity) {
+        case 'Common':
+          rarityColor = '#A9A9A9';
+        break;
+        case 'Rare':
+          rarityColor = '#00008B';
+        break;
+        case 'Epic':
+          rarityColor = '#8B008B';
+        break;
+        case 'Legendary': 
+          rarityColor = '#FF8C00';
+        break;
+
+        default:
+          break;
+      }
+      let waifuDisplay =
+      `<h2 class="popIn" id="banner">You Unlocked</h2>
+        <img src="https://media1.tenor.com/images/0d0d4f684a32df482d5d3fbccacd4dd1/tenor.gif" class="preview" alt="Lootbox gif" height="200px" width="200px">
+        <div id="container">
+          <div id="card" class="dropDown">
+            <div id="imgContainer" style="background-color: ${rarityColor}">
+              <div id="sparkleContainer">
+              </div>
+              <img src=${finalWaifu.url} class="dropDown" alt="Waifu Image" height="200px" width="200px">
+            </div>
+            <h1 class=" shimmer">${finalWaifu.name}</h1>
+            <div id="descContainer">
+              <div class="shiftLeft1">
+                <h3>Series:</h3>
+                <p>${finalWaifu.series}</p>
+              </div>
+              <div class="shiftLeft2">
+                <h3>Description:</h3>
+                <p>${finalWaifu.description}</p>
+              </div>
+              <div class="shiftLeft3">
+                <h3>Rarity:</h3>
+                <p style="color: ${rarityColor}"><b>${finalWaifu.rarity}</b></p>
+              </div>
+              
+            </div>
+          </div>
+        </div>`;
+        return waifuDisplay;
+    }
+
+    const decideRarity = () => {
+      let rand = Math.floor(Math.random() * 100) + 1;//Generate random number between 1 and 100
+      if(rand <= 5){//Legendary 5% chance
+        return 'Legendary';
+      }
+      else if(rand <= 20){//Epic 15% chance
+        return 'Epic';
+      }
+      else if(rand <= 45){//Rare 25% chance
+        return 'Rare';
+      }
+      else if(rand <= 100){//Common 55% chance
+        return 'Common';
+      }
+    }
+    
+    // Sparkle Animation from resource: https://jsfiddle.net/bc_rikko/qwbfkv6y/2/
+    const myRand = () => {
+      let r = 50
+      while (40 < r && r < 60) {
+        r = Math.random() * 100
+      }
+      return r
+    }
+ 
+    const makeSparkles = () => {
+      let container = document.querySelector('#imgContainer');
+
+      for (let i = 0; i < 50; i++) {
+        const delay = Math.random() + 's';
+        const el = document.createElement('img')
+        el.src            = 'https://dl.dropboxusercontent.com/s/soxcov4m81dx55l/star.svg'
+        el.className      = 'glitter-star'
+        el.style.top      = myRand() + '%'
+        el.style.left     = myRand() + '%'
+        el.style.animationDelay       = delay
+        el.style.msAnimationDelay     = delay
+        el.style.webkitAnimationDelay = delay
+        el.style.monAnimationDelay    = delay
+        container.appendChild(el);
+      }
+    }
+
+    window.onload = init;
+
+  </script>
+</head>
+<body>
+  <section id="top">
+    <h1>Waifu Lootboxes</h1>
+    <div id="formContainer">
+      <form id="infoForm" action="/addWaifu" method="post">
+        <!-- Name Field -->
+        <h3 for="name">Name: </h3>
+        <input id="nameField" type="text" name="name" />
+        <!-- Series Field -->
+        <h3 for="series">Series: </h3>
+        <input id="seriesField" type="text" series="series" />
+        <!-- Description Field -->
+        <h3 for="description">Description: </h3>
+        <input id="descriptionField" type="text" description="description" />
+        <!-- Image URL -->
+        <h3 for="url">Image URL: </h3>
+        <input id="urlField" type="text" description="url" />
+        <!-- Rarity Field -->
+        <p></p>
+        <select id='rarityField' style="margin-top: 0.5em">
+          <option value='Common'>Common</option>
+          <option value='Rare'>Rare</option>
+          <option value='Epic'>Epic</option>
+          <option value='Legendary'>Legendary</option>
+        </select>
+        <p></p>
+        <input class="submitBtn" type="submit" value="Add Waifu" />
+      </form>
+    </div>
+    <form id="getForm" action="/getWaifu" method="get">
+      <input class="unlockBtn" type="submit" value="Unlock Your Destiny!" />
+    </form>
+  </section>
+  <section id="content">
+  </section>
+</body>
+</html>
